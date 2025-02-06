@@ -3,6 +3,7 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import mysql from "mysql2/promise";
+// import Product from "../models/product.model";
 import("../models/product.model");
 
 dotenv.config();
@@ -46,6 +47,17 @@ async function initializeDatabase() {
 
     // Sync models and create tables if they don't exist, or alter them if needed
     await sequelize.sync({ alter: true, force: false, logging: console.log });
+    // // Insert default products if not already present
+    // await Product.bulkCreate([
+    //     { name: "pump" },
+    //     { name: "turbine" },
+    //     { name: "valve" }
+    //   ], {
+    //     ignoreDuplicates: true // Avoid duplicate entries if they already exist
+    //   });
+    
+  
+      console.log("Default products inserted successfully.");
     console.log("Database synced successfully with all models.");
   } catch (error) {
     console.error("Error initializing database:", error);
