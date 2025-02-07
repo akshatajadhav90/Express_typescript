@@ -1,24 +1,26 @@
-// src/services/product.service.ts
-import Product from "../models/product.model";
+import { AppDataSource } from "../config/database";
+import { Product } from "../entities/product";
 
-// Service to fetch all products
+// Get the TypeORM repository
+const productRepository = AppDataSource.getRepository(Product);
+
+// Fetch all products
 export const getAllProducts = async () => {
   try {
-    const products = await Product.findAll();
-    return products;
+    return await productRepository.find(); // TypeORM Query
   } catch (error) {
-    console.error("Error in product service (getAllProducts):", error);
+    console.error("Error fetching products:", error);
     throw error;
   }
 };
 
-// Service to create a new product
+// Create a new product
 export const createProduct = async (name: string) => {
   try {
-    const newProduct = await Product.create({ name });
-    return newProduct;
+    const newProduct = productRepository.create({ name }); // TypeORM Entity creation
+    return await productRepository.save(newProduct); // Saves it to the database
   } catch (error) {
-    console.error("Error in product service (createProduct):", error);
+    console.error("Error creating product:", error);
     throw error;
   }
 };

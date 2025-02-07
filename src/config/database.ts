@@ -1,15 +1,19 @@
-// In config/database.ts
-
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
+import "reflect-metadata";
+import { DataSource } from "typeorm";
 import mysql from "mysql2/promise";
-// import Product from "../models/product.model";
-import("../models/product.model");
+import dotenv from "dotenv";
+import { Product } from "../entities/product"; // Import TypeORM Entity
 
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
+// All entities (tables)
+const entities = [Product]; // Add all TypeORM models here
+
+/**
+ * Function to create database if it does not exist
+ */
 async function createDatabase() {
   try {
     const connection = await mysql.createConnection({
@@ -27,42 +31,108 @@ async function createDatabase() {
   }
 }
 
-// Initialize Sequelize instance
-const sequelize = new Sequelize(DB_NAME!, DB_USER!, DB_PASSWORD!, {
+/**
+ * Check if a table exists in the database
+ */
+async function tableExists(
+  connection: any,
+  tableName: string
+): Promise<boolean> {
+  const [rows] = await connection.query(
+    `SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = ? AND table_name = ?`,
+    [DB_NAME, tableName]
+  );
+  return rows[0].count > 0;
+}
+
+/**
+ * Synchronize all tables: Create missing tables & add new columns dynamically
+ */
+async function syncDatabaseSchema() {
+  const connection = await mysql.createConnection({
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+  });
+
+  for (const entity of entities) {
+    const tableName = AppDataSource.getMetadata(entity).tableName;
+    const exists = await tableExists(connection, tableName);
+
+    if (!exists) {
+      console.log(`Creating table: ${tableName}`);
+      await AppDataSource.synchronize(); // Creates all missing tables
+    } else {
+      console.log(`Checking schema updates for table: ${tableName}`);
+
+      // Fetch existing columns
+      const [columns] = (await connection.query(`DESCRIBE ${tableName}`)) as [
+        any[],
+        any
+      ];
+      const existingColumns = new Set(columns.map((col) => col.Field));
+
+      // Get columns from TypeORM model
+      const metadata = AppDataSource.getMetadata(entity);
+      const modelColumns = metadata.columns.map((col) => col.databaseName);
+
+      // Add missing columns
+      const missingColumns = modelColumns.filter(
+        (col) => !existingColumns.has(col)
+      );
+
+      for (const column of missingColumns) {
+        const columnDefinition = metadata.columns.find(
+          (col) => col.databaseName === column
+        );
+        if (columnDefinition) {
+          console.log(`Adding column: ${column} to ${tableName}`);
+          if(columnDefinition.length)
+          {
+            await connection.query(
+              `ALTER TABLE ${tableName} ADD COLUMN ${column} ${columnDefinition.type} ( ${columnDefinition.length} )`
+            );
+          }
+          else{
+          await connection.query(
+            `ALTER TABLE ${tableName} ADD COLUMN ${column} ${columnDefinition.type}`
+          );
+        }
+        }
+      }
+    }
+  }
+
+  await connection.end();
+}
+
+// Initialize TypeORM DataSource
+export const AppDataSource = new DataSource({
+  type: "mysql",
   host: DB_HOST,
-  dialect: "mysql",
-  logging: console.log,
+  port: 3306,
+  username: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
+  entities, // Include all entities
+  synchronize: false, // Disable auto-sync
+  logging: true,
 });
 
-
-async function initializeDatabase() {
+/**
+ * Function to initialize the database (Create DB if not exists + Connect TypeORM)
+ */
+export const initializeDatabase = async () => {
   try {
-    await createDatabase();
+    await createDatabase(); // Ensure database exists first
+    await AppDataSource.initialize(); //  Connect TypeORM after DB is ready
 
-    await sequelize.authenticate();
+    await syncDatabaseSchema();
+
     console.log("Database connected successfully.");
-
-    // Check if models are loaded
-    console.log("models ------------------", sequelize.models);
-
-    // Sync models and create tables if they don't exist, or alter them if needed
-    await sequelize.sync({ alter: true, force: false, logging: console.log });
-    // // Insert default products if not already present
-    // await Product.bulkCreate([
-    //     { name: "pump" },
-    //     { name: "turbine" },
-    //     { name: "valve" }
-    //   ], {
-    //     ignoreDuplicates: true // Avoid duplicate entries if they already exist
-    //   });
-    
-  
-      console.log("Default products inserted successfully.");
-    console.log("Database synced successfully with all models.");
   } catch (error) {
     console.error("Error initializing database:", error);
     throw error;
   }
-}
-
-export { sequelize, initializeDatabase };
+};
