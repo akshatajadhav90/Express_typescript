@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @Entity("products")
 export class Product extends BaseEntity {
@@ -8,9 +15,9 @@ export class Product extends BaseEntity {
   @Column({ type: "varchar", length: 255, nullable: false })
   name!: string;
 
-  @CreateDateColumn({ type: "datetime",  nullable: false})
+  @CreateDateColumn({ type: "datetime", nullable: false })
   created_at!: Date;
 
-  @UpdateDateColumn({ type: "datetime",  nullable: false})
+  @UpdateDateColumn({ type: "datetime", nullable: false })
   updated_at!: Date;
 }

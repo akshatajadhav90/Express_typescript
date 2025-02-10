@@ -2,14 +2,15 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-import { Product } from "../entities/product"; // Import TypeORM Entity
+import { Product } from "../entities/product";
+import { Gates } from "../entities/gates";
 
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 // All entities (tables)
-const entities = [Product]; // Add all TypeORM models here
+const entities = [Product, Gates]; // Add all TypeORM models here
 
 /**
  * Function to create database if it does not exist
@@ -23,7 +24,6 @@ async function createDatabase() {
     });
 
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;`);
-    console.log(`Database '${DB_NAME}' is ready.`);
     await connection.end();
   } catch (error) {
     console.error("Error creating database:", error);
@@ -49,6 +49,8 @@ async function tableExists(
  * Synchronize all tables: Create missing tables & add new columns dynamically
  */
 async function syncDatabaseSchema() {
+
+  try{
   const connection = await mysql.createConnection({
     host: DB_HOST,
     user: DB_USER,
@@ -59,20 +61,54 @@ async function syncDatabaseSchema() {
   for (const entity of entities) {
     const tableName = AppDataSource.getMetadata(entity).tableName;
     const exists = await tableExists(connection, tableName);
+    
+    if (!exists) {    
+      const queryRunner = AppDataSource.createQueryRunner();
+      await queryRunner.connect();
+    
+      try {
+        const metadata = AppDataSource.getMetadata(entity); // Fetch metadata
 
-    if (!exists) {
-      console.log(`Creating table: ${tableName}`);
-      await AppDataSource.synchronize(); // Creates all missing tables
-    } else {
-      console.log(`Checking schema updates for table: ${tableName}`);
-
+        const columns = metadata.columns
+          .map((col) => {
+            let sqlType = col.type;
+            let length = col.length || null; // Fetch length if defined
+        
+            // Convert JavaScript types to valid SQL types
+            if (typeof sqlType === "function") {
+              if (sqlType === Number) sqlType = "int";
+              else if (sqlType === String) sqlType = "varchar";
+              else if (sqlType === Date) sqlType = "datetime";
+              else sqlType = "text"; // Default for unknown types
+            }
+        
+            // Append length only when applicable
+            if (sqlType === "varchar" && length) {
+              sqlType += `(${length})`; // Example: varchar(255)
+            }
+        
+            return `\`${col.databaseName}\` ${sqlType}`;
+          })
+          .join(", ");
+        
+        const createTableQuery = `CREATE TABLE \`${tableName}\` (${columns})`;
+        
+        await queryRunner.query(createTableQuery); // Execute query        
+      } catch (error) {
+        console.error(`Error creating table ${tableName}:`, error);
+      } finally {
+        await queryRunner.release();
+      }
+    }
+    
+    
+    else {
       // Fetch existing columns
       const [columns] = (await connection.query(`DESCRIBE ${tableName}`)) as [
         any[],
         any
       ];
       const existingColumns = new Set(columns.map((col) => col.Field));
-
       // Get columns from TypeORM model
       const metadata = AppDataSource.getMetadata(entity);
       const modelColumns = metadata.columns.map((col) => col.databaseName);
@@ -81,33 +117,33 @@ async function syncDatabaseSchema() {
       const missingColumns = modelColumns.filter(
         (col) => !existingColumns.has(col)
       );
-
       for (const column of missingColumns) {
         const columnDefinition = metadata.columns.find(
           (col) => col.databaseName === column
         );
         if (columnDefinition) {
-          console.log(`Adding column: ${column} to ${tableName}`);
-          if(columnDefinition.length)
-          {
+          if (columnDefinition.length) {
             await connection.query(
               `ALTER TABLE ${tableName} ADD COLUMN ${column} ${columnDefinition.type} ( ${columnDefinition.length} )`
             );
+          } else {
+            await connection.query(
+              `ALTER TABLE ${tableName} ADD COLUMN ${column} ${columnDefinition.type}`
+            );
           }
-          else{
-          await connection.query(
-            `ALTER TABLE ${tableName} ADD COLUMN ${column} ${columnDefinition.type}`
-          );
-        }
         }
       }
     }
   }
-
   await connection.end();
 }
+catch(error)
+{
+  console.error("error in catch syncDatabaseSchema ======================", error)
+  throw error;
+}
+}
 
-// Initialize TypeORM DataSource
 export const AppDataSource = new DataSource({
   type: "mysql",
   host: DB_HOST,
@@ -115,9 +151,9 @@ export const AppDataSource = new DataSource({
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-  entities, // Include all entities
+  entities, 
   synchronize: false, // Disable auto-sync
-  logging: true,
+  logging: false,
 });
 
 /**
@@ -129,10 +165,8 @@ export const initializeDatabase = async () => {
     await AppDataSource.initialize(); //  Connect TypeORM after DB is ready
 
     await syncDatabaseSchema();
-
-    console.log("Database connected successfully.");
   } catch (error) {
-    console.error("Error initializing database:", error);
+    console.error("Error initializing database==========================", error);
     throw error;
   }
 };
