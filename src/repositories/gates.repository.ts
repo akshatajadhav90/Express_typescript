@@ -1,19 +1,24 @@
-// src/repositories/product.repository.ts
+// src/repositories/gates.repository.ts
 
 import { AppDataSource } from "../config/database";
 import { Gates } from "../entities/gates.entity";
 import { Repository } from "typeorm";
 
-// Get the TypeORM repository
-export const gatesRepository: Repository<Gates> = AppDataSource.getRepository(Gates);
+export class GatesRepository {
+  private repository: Repository<Gates>;
 
-// Fetch all products
-export const findAllGates = async (): Promise<Gates[]> => {
-  return await gatesRepository.find();
-};
+  constructor() {
+    this.repository = AppDataSource.getRepository(Gates);
+  }
 
-// Create a new product
-export const createNewGate = async (name: string): Promise<Gates> => {
-  const newProduct = gatesRepository.create({ name });
-  return await gatesRepository.save(newProduct);
-};
+  // Fetch all gates
+  async findAll(): Promise<Gates[]> {
+    return await this.repository.find();
+  }
+
+  // Create a new gate
+  async createGate(name: string): Promise<Gates> {
+    const newGate = this.repository.create({ name });
+    return await this.repository.save(newGate);
+  }
+}

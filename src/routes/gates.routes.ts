@@ -1,12 +1,12 @@
+// src/routes/gates.routes.ts
 import express from "express";
-import { getGates, createGates } from "../controllers/gates.controller";
+import { GatesController } from "../controllers/gates.controller";
 
 const router = express.Router();
+const gatesController = new GatesController();
 
-// Route to get all gates
-router.get("/", getGates);
+// Define routes and bind controller methods
+router.get("/", (req, res) => gatesController.getGates(req, res));
+router.post("/create", (req, res) => gatesController.createGates(req, res));
 
-// Route to create a new gate
-router.post("/create", createGates);
-
-export default router; 
+export default router;
