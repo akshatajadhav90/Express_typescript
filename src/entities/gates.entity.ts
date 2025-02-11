@@ -15,6 +15,9 @@ export class Gates {
   @Column({ type: "varchar", length: 255, nullable: false })
   name!: string;
 
+  @Column({ type: "int", nullable: false })
+  display_order!: number;
+
   @CreateDateColumn({ type: "datetime", nullable: false })
   created_at!: Date;
 
