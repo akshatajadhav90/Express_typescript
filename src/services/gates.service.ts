@@ -1,14 +1,14 @@
 // src/services/product.service.ts
 
-import { findAllProducts, createNewProduct } from "../repositories/product.repository";
+import { findAllGates, createNewGate } from "../repositories/gates.repository";
 import { STATUS_CODES } from "../constants/statusCodes";
 import { MESSAGES } from "../constants/messages";
 import { successResponse, errorResponse } from "../utils/responseHelper";
 
 // Fetch all products
-export const getAllProducts = async () => {
+export const getAllGates = async () => {
   try {
-    const data = await findAllProducts();
+    const data = await findAllGates();
     return successResponse(STATUS_CODES.SUCCESS, MESSAGES.FETCH_SUCCESS, data);
   } catch (error: any) {
     console.error("Error fetching products:", error);
@@ -17,9 +17,9 @@ export const getAllProducts = async () => {
 };
 
 // Create a new product
-export const createProduct = async (name: string) => {
+export const createGate = async (name: string) => {
   try {
-    const savedProduct = await createNewProduct(name);
+    const savedProduct = await createNewGate(name);
     return successResponse(STATUS_CODES.CREATED, MESSAGES.CREATED_SUCCESS, savedProduct);
   } catch (error: any) {
     console.error("Error creating product:", error);
