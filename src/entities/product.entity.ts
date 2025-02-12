@@ -8,13 +8,13 @@ import {
 } from "typeorm";
 
 @Entity("products")
-export class Product extends BaseEntity {
+export class Product {
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Column({ type: "varchar", length: 255, nullable: false })
   name!: string;
-
+  
   @CreateDateColumn({ type: "datetime", nullable: false })
   created_at!: Date;
 

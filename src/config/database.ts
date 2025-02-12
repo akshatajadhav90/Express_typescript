@@ -2,9 +2,8 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-import { Product } from "../entities/product";
-import { Gates } from "../entities/gates";
-import { User } from "../entities/user.entity";
+import { Product } from "../entities/product.entity";
+import { Gates } from "../entities/gates.entity";
 
 dotenv.config();
 
