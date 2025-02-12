@@ -1,12 +1,10 @@
+// src/routes/product.routes.ts
 import express from "express";
-import { getProducts, createProducts } from "../controllers/product.controller";
+import { productController } from "../controllers/product.controller";
 
 const router = express.Router();
 
-// Route to get all products
-router.get("/", getProducts);
+router.get("/", (req, res) => productController.getProducts(req, res));
+router.post("/create", (req, res) => productController.createProduct(req, res));
 
-// Route to create a new product
-router.post("/create", createProducts);
-
-export default router; 
+export default router;

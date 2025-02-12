@@ -1,19 +1,23 @@
 // src/repositories/product.repository.ts
-
 import { AppDataSource } from "../config/database";
 import { Product } from "../entities/product.entity";
 import { Repository } from "typeorm";
 
-// Get the TypeORM repository
-export const productRepository: Repository<Product> = AppDataSource.getRepository(Product);
+export class ProductRepository {
+  private productRepository: Repository<Product>;
 
-// Fetch all products
-export const findAllProducts = async (): Promise<Product[]> => {
-  return await productRepository.find();
-};
+  constructor() {
+    this.productRepository = AppDataSource.getRepository(Product);
+  }
 
-// Create a new product
-export const createNewProduct = async (name: string): Promise<Product> => {
-  const newProduct = productRepository.create({ name });
-  return await productRepository.save(newProduct);
-};
+  // Fetch all products
+  public async findAllProducts(): Promise<Product[]> {
+    return await this.productRepository.find();
+  }
+
+  // Create a new product
+  public async createNewProduct(name: string): Promise<Product> {
+    const newProduct = this.productRepository.create({ name });
+    return await this.productRepository.save(newProduct);
+  }
+}
