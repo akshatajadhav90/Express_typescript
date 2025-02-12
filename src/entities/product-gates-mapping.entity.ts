@@ -6,17 +6,17 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity("gates")
-export class Gates {
+@Entity("products_gates_mapping")
+export class Products_gates_mapping {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "varchar", length: 255, nullable: false })
-  name!: string;
+  @Column({ type: "int", nullable: false })
+  product_id!: string;
 
   @Column({ type: "int", nullable: false })
-  display_order!: number;
-
+  gate_id!: number;
+  
   @CreateDateColumn({ type: "datetime", nullable: false })
   created_at!: Date;
 

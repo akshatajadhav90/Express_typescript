@@ -5,13 +5,14 @@ import dotenv from "dotenv";
 import { Product } from "../entities/product.entity";
 import { Gates } from "../entities/gates.entity";
 import { User } from "../entities/user.entity";
+import { Products_gates_mapping } from "../entities/product-gates-mapping.entity";
 
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 // All entities (tables)
-const entities = [Product, Gates, User]; // Add all TypeORM models here
+const entities = [Product, Gates, Products_gates_mapping, User]; // Add all TypeORM models here
 
 /**
  * Function to create database if it does not exist
