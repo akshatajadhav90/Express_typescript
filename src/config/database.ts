@@ -4,6 +4,7 @@ import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 import { Product } from "../entities/product.entity";
 import { Gates } from "../entities/gates.entity";
+import { User } from "../entities/user.entity";
 
 dotenv.config();
 
