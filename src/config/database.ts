@@ -4,13 +4,14 @@ import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 import { Product } from "../entities/product.entity";
 import { Gates } from "../entities/gates.entity";
+import { User } from "../entities/user.entity";
 
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 // All entities (tables)
-const entities = [Product, Gates]; // Add all TypeORM models here
+const entities = [Product, Gates, User]; // Add all TypeORM models here
 
 /**
  * Function to create database if it does not exist
@@ -152,7 +153,7 @@ export const AppDataSource = new DataSource({
   password: DB_PASSWORD,
   database: DB_NAME,
   entities, 
-  synchronize: false, // Disable auto-sync
+  synchronize: false,
   logging: false,
 });
 
