@@ -109,15 +109,13 @@ async function syncDatabaseSchema() {
       }
     }
     
-    
     else {
       // Fetch existing columns
-      console.log(`tableName=====================`,tableName);
       const [columns] = (await connection.query(`DESCRIBE ${tableName}`)) as [
         any[],
         any
       ];
-      console.log(`columns=====================`,columns);
+   
       const existingColumns = new Set(columns.map((col) => col.Field));
       // Get columns from TypeORM model
       const metadata = AppDataSource.getMetadata(entity);
