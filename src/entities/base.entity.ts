@@ -15,7 +15,7 @@ import {
     @UpdateDateColumn({ type: "timestamp" })
     updated_at!: Date;
   
-    @Column({ type: "timestamp" })
-    deleted_at!: Date;
+    @Column({ type: "int" , default:0})
+    deleted_at!: number;
   }
   
