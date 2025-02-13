@@ -1,16 +1,11 @@
 import {
     Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    BaseEntity,
-    CreateDateColumn,
-    UpdateDateColumn,
+    Column
   } from "typeorm";
+import { BaseEntity } from "./base.entity";
   
   @Entity("users")
   export class User extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id!: number;
   
     @Column({ type: "varchar", length: 255, nullable: false })
     firstName!: string;
@@ -27,9 +22,4 @@ import {
     @Column({ type: "varchar", length: 255, nullable: false })
     password!: string;
   
-    @CreateDateColumn({ type: "timestamp" })
-    createdAt!: Date;
-  
-    @UpdateDateColumn({ type: "timestamp" })
-    updatedAt!: Date;
   }

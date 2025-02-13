@@ -1,11 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  BaseEntity,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity } from "./base.entity";
 
 @Entity("enquiries")
 export class Enquiry extends BaseEntity {

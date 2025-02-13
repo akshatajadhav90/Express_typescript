@@ -1,25 +1,17 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Entity, ManyToOne } from "typeorm";
+import { Product } from "./product.entity";
+import { Gates } from "./gates.entity";
+import { BaseEntity } from "./base.entity";
 
 @Entity("products_gates_mapping")
-export class Products_gates_mapping {
-  @PrimaryGeneratedColumn()
-  id!: number;
+export class Products_gates_mapping extends BaseEntity {
+  @ManyToOne(() => Product, (product) => product.products_gates_mapping, {
+    onDelete: "RESTRICT", // Prevents deletion if mappings exist
+  })
+  product!: Product;
 
-  @Column({ type: "int", nullable: false })
-  product_id!: string;
-
-  @Column({ type: "int", nullable: false })
-  gate_id!: number;
-  
-  @CreateDateColumn({ type: "datetime", nullable: false })
-  created_at!: Date;
-
-  @UpdateDateColumn({ type: "datetime", nullable: false })
-  updated_at!: Date;
+  @ManyToOne(() => Gates, (gate) => gate.products_gates_mapping, {
+    onDelete: "RESTRICT", // Prevents deletion if mappings exist
+  })
+  gate!: Gates;
 }

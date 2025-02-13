@@ -10,8 +10,8 @@ import {
   import { FormField } from "./formFields.entity";
 
 
-  @Entity("table")
-  export class Table extends BaseEntity {
+  @Entity("formTables")
+  export class FormTables extends BaseEntity {
     @Column({ type: "varchar", length: 255, nullable: false })
     name!: string;
 

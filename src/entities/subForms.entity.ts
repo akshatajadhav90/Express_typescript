@@ -8,7 +8,7 @@ import {
 import { BaseEntity } from "./base.entity";
 import { Form } from "./forms.entity";
 import { FormField } from "./formFields.entity";
-import { Table } from "./tableFields.entity";
+import { FormTables } from "./tableFields.entity";
 
 
 @Entity("subForms")
@@ -35,6 +35,6 @@ export class SubForm extends BaseEntity {
   @OneToMany(() => FormField, (formField) => formField.subForm, { cascade: true })
   formFields!: FormField[];
 
-  @OneToMany(() => Table, (table) => table.subForm, { cascade: true })
-  tables!: Table[];
+  @OneToMany(() => FormTables, (table) => table.subForm, { cascade: true })
+  tables!: FormTables[];
 }

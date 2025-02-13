@@ -6,13 +6,19 @@ import { Product } from "../entities/product.entity";
 import { Gates } from "../entities/gates.entity";
 import { User } from "../entities/user.entity";
 import { Products_gates_mapping } from "../entities/product-gates-mapping.entity";
+import { Form } from "../entities/forms.entity";
+import { SubForm } from "../entities/subForms.entity";
+import { FormFieldsOptions } from "../entities/fieldOptions.entity";
+import { FormField } from "../entities/formFields.entity";
+import {FormTables} from "../entities/tableFields.entity"
+
 
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 // All entities (tables)
-const entities = [Product, Gates, Products_gates_mapping, User]; // Add all TypeORM models here
+const entities = [Product, Gates, Products_gates_mapping, User, Form ,SubForm,FormField,FormFieldsOptions,FormTables]; // Add all TypeORM models here
 
 /**
  * Function to create database if it does not exist
@@ -106,10 +112,12 @@ async function syncDatabaseSchema() {
     
     else {
       // Fetch existing columns
+      console.log(`tableName=====================`,tableName);
       const [columns] = (await connection.query(`DESCRIBE ${tableName}`)) as [
         any[],
         any
       ];
+      console.log(`columns=====================`,columns);
       const existingColumns = new Set(columns.map((col) => col.Field));
       // Get columns from TypeORM model
       const metadata = AppDataSource.getMetadata(entity);
@@ -154,7 +162,7 @@ export const AppDataSource = new DataSource({
   password: DB_PASSWORD,
   database: DB_NAME,
   entities, 
-  synchronize: false,
+  synchronize: true,
   logging: false,
 });
 
