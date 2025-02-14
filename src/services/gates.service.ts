@@ -16,21 +16,62 @@ export class GatesService {
   async getAllGates() {
     try {
       const data = await this.gatesRepository.findAll();
-      return successResponse(STATUS_CODES.SUCCESS, MESSAGES.FETCH_SUCCESS, data);
+      return successResponse(
+        STATUS_CODES.SUCCESS,
+        MESSAGES.FETCH_SUCCESS,
+        data
+      );
     } catch (error: any) {
       console.error("Error fetching gates:", error);
-      return errorResponse(STATUS_CODES.SERVER_ERROR, MESSAGES.INTERNAL_SERVER, error.message);
+      return errorResponse(
+        STATUS_CODES.SERVER_ERROR,
+        MESSAGES.INTERNAL_SERVER,
+        error.message
+      );
     }
   }
 
-  // Create a new gate
-  async createGate(name: string) {
+  // Create a new gate and update product-gate mapping
+  async createGate(name: string, productId: string, display_order: number) {
     try {
-      const savedGate = await this.gatesRepository.createGate(name);
-      return successResponse(STATUS_CODES.CREATED, MESSAGES.CREATED_SUCCESS, savedGate);
+      const savedGate = await this.gatesRepository.createGate(
+        name,
+        productId,
+        display_order
+      );
+      return successResponse(
+        STATUS_CODES.CREATED,
+        MESSAGES.CREATED_SUCCESS,
+        savedGate
+      );
     } catch (error: any) {
       console.error("Error creating gate:", error);
-      return errorResponse(STATUS_CODES.SERVER_ERROR, MESSAGES.INTERNAL_SERVER, error.message);
+      return errorResponse(
+        STATUS_CODES.SERVER_ERROR,
+        MESSAGES.INTERNAL_SERVER,
+        error.message
+      );
+    }
+  }
+
+  // Create a new gate and update product-gate mapping
+  async productGates( productId: string) {
+    try {
+      const savedGate = await this.gatesRepository.productGates(
+        productId,
+      );
+      return successResponse(
+        STATUS_CODES.CREATED,
+        MESSAGES.CREATED_SUCCESS,
+        savedGate
+      );
+    } catch (error: any) {
+      console.error("Error creating gate:", error);
+      return errorResponse(
+        STATUS_CODES.SERVER_ERROR,
+        MESSAGES.INTERNAL_SERVER,
+        error.message
+      );
     }
   }
 }
