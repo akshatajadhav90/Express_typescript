@@ -160,7 +160,7 @@ export const AppDataSource = new DataSource({
   password: DB_PASSWORD,
   database: DB_NAME,
   entities, 
-  synchronize: true,
+  synchronize: false,
   logging: false,
 });
 
@@ -171,6 +171,7 @@ export const initializeDatabase = async () => {
   try {
     await createDatabase(); // Ensure database exists first
     await AppDataSource.initialize(); //  Connect TypeORM after DB is ready
+    
 
     await syncDatabaseSchema();
   } catch (error) {
