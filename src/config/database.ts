@@ -160,7 +160,7 @@ export const AppDataSource = new DataSource({
   password: DB_PASSWORD,
   database: DB_NAME,
   entities, 
-  synchronize: true,
+  synchronize: false,
   logging: false,
 });
 
