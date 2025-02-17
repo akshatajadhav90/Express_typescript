@@ -171,6 +171,7 @@ export const initializeDatabase = async () => {
   try {
     await createDatabase(); // Ensure database exists first
     await AppDataSource.initialize(); //  Connect TypeORM after DB is ready
+    
 
     await syncDatabaseSchema();
   } catch (error) {
