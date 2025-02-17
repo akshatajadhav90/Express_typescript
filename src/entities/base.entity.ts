@@ -16,6 +16,6 @@ import {
     updated_at!: Date;
   
     @Column({ type: "int" , default:0})
-    deleted_at!: number;
+    is_deleted!: number;
   }
   

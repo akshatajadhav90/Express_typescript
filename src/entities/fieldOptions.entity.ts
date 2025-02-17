@@ -7,7 +7,7 @@ import {
   import { BaseEntity } from "./base.entity";
   import { SubForm } from "./subForms.entity"; 
 
-  @Entity("formFieldsOptions")
+  @Entity({name:"formFieldsOptions"})
   export class FormFieldsOptions extends BaseEntity{
 
     @Column({ type: "varchar", length: 255, nullable: false })
