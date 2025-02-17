@@ -8,5 +8,7 @@ const gatesController = new GatesController();
 // Define routes and bind controller methods
 router.get("/", (req, res) => gatesController.getGates(req, res));
 router.post("/create", (req, res) => gatesController.createGates(req, res));
+router.get("/:productId", (req, res) => gatesController.productGates(req, res));
+
 
 export default router;
