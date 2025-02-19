@@ -11,7 +11,7 @@ export class FormRepository{
    }
 
    async findAll(): Promise<Form[]> {
-    return await this.repository.find({ where: { is_deleted: 0 },relations: ["subForms"] });  
+    return await this.repository.find({ where: { is_deleted: 0 }, relations: ["subForms"] });  
   }
 
    async createForm(formName: string, productGateMapId: number): Promise<Form> {
