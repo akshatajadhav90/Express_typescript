@@ -6,5 +6,6 @@ const formController = new FormController();
 
 router.get("/", (req, res) => formController.getForms(req, res));
 router.post("/create", (req, res) => formController.createForm(req, res));
+router.get("/:formId", (req, res) => formController.getFormById(req, res));
 
 export default router;

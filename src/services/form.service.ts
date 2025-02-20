@@ -31,5 +31,20 @@ export class FormService{
     }
   }
 
+  async getFormById(formId: number) {
+    try {
+      const form = await this.formRepository.findById(formId);
+      if (!form) {
+        return null;
+      }
+      return successResponse(200, "Form fetched successfully", form);
+    } catch (error: any) {
+      console.error("Error fetching form by ID:", error);
+      return errorResponse(500, "Internal Server Error", error.message);
+    }
+  }
+  
+  
+
 
 }

@@ -3,9 +3,11 @@ import {
     Column,
     ManyToOne,
     JoinColumn,
+    OneToMany,
   } from "typeorm";
   import { BaseEntity } from "./base.entity";
   import { SubForm } from "./subForms.entity"; 
+import { FormFieldsOptions } from "./fieldOptions.entity";
 
   @Entity("formFields")
   export class FormField extends BaseEntity{
@@ -40,4 +42,7 @@ import {
 
     @Column({ type: "integer", nullable: false })
     rowspan!: number;
+
+    @OneToMany(() => FormFieldsOptions, (option) => option.formField, { cascade: true })
+    formFieldOptions!: FormFieldsOptions[];
   }

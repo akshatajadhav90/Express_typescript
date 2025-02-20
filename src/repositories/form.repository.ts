@@ -11,12 +11,20 @@ export class FormRepository{
    }
 
    async findAll(): Promise<Form[]> {
-    return await this.repository.find({ where: { is_deleted: 0 }, relations: ["subForms"] });  
+    return await this.repository.find({ where: { is_deleted: 0 }, relations: ["subForms","subForms.formFields"] });  
   }
 
    async createForm(formName: string, productGateMapId: number): Promise<Form> {
     const newForm = this.repository.create({ formName, productGateMapId });
     return await this.repository.save(newForm);
   }
+
+  async findById(id: number): Promise<Form | null> {
+    return await this.repository.findOne({
+      where: { id, is_deleted: 0 },
+      relations: ["subForms", "subForms.formFields"], // Fetch subForms and formFields
+    });
+  }
+  
 
 }

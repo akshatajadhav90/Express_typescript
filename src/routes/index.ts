@@ -4,6 +4,8 @@ import gatesRoutes from "./gates.routes";
 import userRoutes from "./user.routes";
 import formRoutes from "./form.routes";
 import subformRoutes from "./subForms.routes"
+import formfields from "./formField.routes"
+import fieldOptions from "./formFieldsOptions.routes"
 
 const router = express.Router();
 
@@ -12,6 +14,8 @@ router.use("/products", productRoutes);
 router.use("/gates", gatesRoutes);
 router.use("/user", userRoutes);
 router.use("/forms",formRoutes);
-router.use("/subforms",formRoutes);
+router.use("/subforms",subformRoutes);
+router.use("/formfields",formfields);
+router.use("/fieldOptions",fieldOptions);
 
 export default router;

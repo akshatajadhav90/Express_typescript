@@ -40,4 +40,26 @@ export class FormController {
       res.status(500).json({ error: MESSAGES.INTERNAL_SERVER });
     }
   }
+
+  async getFormById(req: Request, res: Response): Promise<any> {
+    const id  = req.params.formId;
+  
+    if (!id) {
+      return res.status(400).json({ error: "Form ID is required" });
+    }
+  
+    try {
+      const form = await this.formService.getFormById(parseInt(id));
+  
+      if (!form) {
+        return res.status(404).json({ error: "Form not found" });
+      }
+  
+      res.status(200).json(form);
+    } catch (error) {
+      console.error("Error in FormController (getFormById):", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  
 }
