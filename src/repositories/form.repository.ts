@@ -22,7 +22,7 @@ export class FormRepository{
   async findById(id: number): Promise<Form | null> {
     return await this.repository.findOne({
       where: { id, is_deleted: 0 },
-      relations: ["subForms", "subForms.formFields"], // Fetch subForms and formFields
+      relations: ["subForms", "subForms.formFields","subForms.formFields.formFieldOptions"], // Fetch subForms and formFields
     });
   }
   

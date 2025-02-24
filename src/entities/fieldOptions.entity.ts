@@ -5,7 +5,6 @@ import {
     JoinColumn,
   } from "typeorm";
   import { BaseEntity } from "./base.entity";
-  import { SubForm } from "./subForms.entity"; 
   import {FormField} from "./formFields.entity"
 
   @Entity({name:"formFieldsOptions"})

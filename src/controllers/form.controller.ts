@@ -22,9 +22,9 @@ export class FormController {
 
   async createForm(req: Request, res: Response): Promise<any> {
      
-    if (Object.keys(req.body).length === 0) {
-      return res.status(400).json({ error: MESSAGES.REQUEST_BODY_REQUIRED });
-    }
+    // if (Object.keys(req.body).length === 0) {
+    //   return res.status(400).json({ error: MESSAGES.REQUEST_BODY_REQUIRED });
+    // }
 
     const { formName, productGateMapId } = req.body;
 
