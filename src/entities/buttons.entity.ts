@@ -2,7 +2,7 @@ import { Entity, Column, OneToMany } from "typeorm";
 import { ButtonMapping } from "./buttonMapping.entity";
 import { BaseEntity } from "./base.entity";
 
-@Entity()
+@Entity("button")
 export class Button extends BaseEntity {
     @Column()
     label!: string;
